@@ -1,0 +1,49 @@
+# Connect Frontend, Backend, and Database
+
+The Postgres database is running via Docker and the backend application builds successfully. The reason the frontend and backend are not communicating is because the frontend (Android app) does not yet implement actual network requests for the authentication flow, and it may need network security configuration to allow local HTTP traffic to the backend.
+
+## Proposed Changes
+
+### Frontend Networking Configuration
+We need to set up the Retrofit client to point to the backend and configure Android to allow cleartext traffic to the local emulator proxy (`10.0.2.2`).
+
+#### [NEW] `frontend/app/src/main/java/com/example/supporterunt/app/network/NetworkModule.kt`
+- Create a Retrofit instance configured with `http://10.0.2.2:8080/` as the Base URL (this maps to localhost:8080 on the host machine where the backend runs).
+- Provide the [SupporterApi](file:///d:/Implementation4PJ/management_app_for_student/frontend/app/src/main/java/com/example/supporterunt/app/network/SupporterApi.kt#16-27) interface implementation.
+
+#### [NEW] `frontend/app/src/main/res/xml/network_security_config.xml`
+- Implement network security config to allow cleartext traffic for `10.0.2.2`.
+
+#### [MODIFY] [frontend/app/src/main/AndroidManifest.xml](file:///d:/Implementation4PJ/management_app_for_student/frontend/app/src/main/AndroidManifest.xml)
+- Add `<uses-permission android:name="android.permission.INTERNET" />`.
+- Add `android:networkSecurityConfig="@xml/network_security_config"` to the `<application>` tag.
+
+### Frontend ViewModels
+Create ViewModels to handle the logic, state, and API calls for authentication.
+
+#### [NEW] `frontend/app/src/main/java/com/example/supporterunt/app/ui/viewmodels/AuthViewModel.kt`
+- Implement login and registration functions that call [SupporterApi](file:///d:/Implementation4PJ/management_app_for_student/frontend/app/src/main/java/com/example/supporterunt/app/network/SupporterApi.kt#16-27).
+- Manage UI states (loading, success, error).
+
+### UI Integration
+Hook up the newly created ViewModel to the existing UI screens.
+
+#### [MODIFY] [frontend/app/src/main/java/com/example/supporterunt/app/ui/screens/LoginScreen.kt](file:///d:/Implementation4PJ/management_app_for_student/frontend/app/src/main/java/com/example/supporterunt/app/ui/screens/LoginScreen.kt)
+- Inject or instantiate `AuthViewModel`.
+- Replace the `// TODO: Call ViewModel to login via API` with actual ViewModel calls.
+- Display error messages if login fails.
+
+#### [MODIFY] [frontend/app/src/main/java/com/example/supporterunt/app/ui/screens/RegistrationScreen.kt](file:///d:/Implementation4PJ/management_app_for_student/frontend/app/src/main/java/com/example/supporterunt/app/ui/screens/RegistrationScreen.kt)
+- Inject or instantiate `AuthViewModel`.
+- Replace the `// TODO: Call ViewModel to register via API` with actual ViewModel calls.
+
+## Verification Plan
+
+### Automated Tests
+- We will run `gradlew build` in the `frontend` folder to ensure all Kotlin code compiles successfully.
+- We will boot the backend API using `gradlew bootRun`.
+
+### Manual Verification
+- We will build and deploy the Android app to an emulator.
+- We can manually test the registration flow by entering a name, email, password, and role, and checking if the backend receives the request and inserts the user into the local PostgreSQL database.
+- We can test the login flow using the registered credentials.

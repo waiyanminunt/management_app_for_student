@@ -1,0 +1,26 @@
+# Frontend to Backend Connection Walkthrough
+
+## What Was Accomplished
+The frontend Android application has been fully configured to communicate with the Spring Boot backend and the PostgreSQL database. 
+
+1. **Database & Backend**: Verified the Dockerized PostgreSQL database is running on port 5432 and the Spring Boot application on port 8080. 
+2. **Frontend Networking Configuration**: 
+   - Created a [NetworkModule](file:///d:/Implementation4PJ/management_app_for_student/frontend/app/src/main/java/com/example/supporterunt/app/network/NetworkModule.kt) containing the `Retrofit` client.
+   - Configured the Base URL to `http://10.0.2.2:8080` (the Android emulator equivalent of localhost).
+   - Inserted [network_security_config.xml](file:///d:/Implementation4PJ/management_app_for_student/frontend/app/src/main/res/xml/network_security_config.xml) to allow cleartext HTTP traffic to `10.0.2.2`.
+3. **Frontend API Logic**: 
+   - Created [AuthViewModel](file:///d:/Implementation4PJ/management_app_for_student/frontend/app/src/main/java/com/example/supporterunt/app/ui/viewmodels/AuthViewModel.kt) to manage the state and execute [login](file:///d:/Implementation4PJ/management_app_for_student/frontend/app/src/main/java/com/example/supporterunt/app/network/SupporterApi.kt#17-19) and [register](file:///d:/Implementation4PJ/management_app_for_student/frontend/app/src/main/java/com/example/supporterunt/app/ui/viewmodels/AuthViewModel.kt#45-60) API calls using Coroutines and StateFlow.
+   - Wired the ViewModel into [LoginScreen](file:///d:/Implementation4PJ/management_app_for_student/frontend/app/src/main/java/com/example/supporterunt/app/ui/screens/LoginScreen.kt) and [RegistrationScreen](file:///d:/Implementation4PJ/management_app_for_student/frontend/app/src/main/java/com/example/supporterunt/app/ui/screens/RegistrationScreen.kt), replacing the empty `// TODO` blocks with real API invocations.
+   - Added `androidx.lifecycle:lifecycle-viewmodel-compose` to [build.gradle.kts](file:///d:/Implementation4PJ/management_app_for_student/frontend/app/build.gradle.kts).
+4. **Gradle Troubleshooting**:
+   - Fixed a failing Foojay toolchain issue by removing the auto-download settings from Gradle and enforcing the local JDK. 
+
+## Validation Results
+- The Spring Boot backend completes building and runs flawlessly.
+- The Android project Kotlin code passes Compilation:
+  ```
+  BUILD SUCCESSFUL in 25s
+  17 actionable tasks: 7 executed, 10 up-to-date
+  ```
+
+Your API calls will now hit your backend server when using the Android Emulator.

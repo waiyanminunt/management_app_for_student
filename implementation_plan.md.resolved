@@ -1,0 +1,62 @@
+# Supporter Unt App - Implementation Plan
+
+## Goal Description
+Build the "Supporter Unt" mobile application for Students and Teachers. 
+The application requires Kotlin/Java, Jetpack Compose, PostgreSQL, and JWT for authentication.
+
+> [!CAUTION]
+> **Important Architectural Decision:** 
+> Android applications **cannot and should not** connect directly to a PostgreSQL database for security and architectural reasons. 
+> To achieve your goal securely, we must build a **Backend Service** (API) that the mobile app communicates with. The backend will interact with the PostgreSQL database.
+
+## Proposed Architecture
+
+We will split the project into two main repositories/folders:
+1. **Backend API (Spring Boot or Ktor with Kotlin/Java):** Handles database connections (PostgreSQL), business logic, and JWT Authentication.
+2. **Android App (Kotlin & Jetpack Compose):** The frontend UI that students and teachers will install and use. It communicates with the Backend via REST API.
+
+## Requirements & Features Breakdown
+
+### 1. Database Schema (PostgreSQL via Backend)
+- **Users Table:** ID, Name, Email, PasswordHash, Role (STUDENT, TEACHER).
+- **Classes/Modules Table:** ID, Title, Description, TeacherID (assigned teacher), Price (if paid).
+- **Registrations Table:** StudentID, ClassID, PaymentStatus.
+- **Attendance Table:** ClassID, StudentID, Date, Status (Present/Absent).
+- **Daily Routines Table:** ID, TeacherID, Routine Details, Date.
+- **Feedback & Voting Table:** ID, StudentID, SeasonActivityID, Vote/Feedback Text.
+
+### 2. Backend API (Kotlin + Spring Boot/Ktor)
+- **Auth Service:** `/api/auth/register` and `/api/auth/login` returning JWTs.
+- **Classes Service:** `/api/classes` to list, create, and assign teachers.
+- **Registration Service:** `/api/enroll` for students to register for paid courses/modules.
+- **Attendance Service:** `/api/attendance` for teachers to mark and students to view attendance.
+- **Routines Service:** `/api/routines` for teachers' daily routines.
+- **Feedback Service:** `/api/feedback` for students to submit feedback and vote.
+
+### 3. Android Frontend (Kotlin + Jetpack Compose)
+- **Networking:** Retrofit or Ktor Client to talk to the Backend API using the JWT token.
+- **UI Screens:**
+  - Login & Registration Screen.
+  - Student Dashboard (View Classes, Register for Modules, Give Feedback, View Attendance).
+  - Teacher Dashboard (View Assigned Classes, Mark Attendance, Manage Daily Routines).
+- **State Management:** ViewModel with Kotlin Coroutines and StateFlow.
+
+## User Review Required
+
+> [!IMPORTANT]
+> Please review and confirm the following before we begin coding:
+> 1. Do you agree with the **Backend + Mobile App** architecture to securely connect to PostgreSQL?
+> 2. For the backend, do you prefer **Spring Boot** (very popular for Kotlin/Java) or **Ktor** (lightweight Kotlin framework)?
+> 3. Should we initialize the Android project and the Backend project in the same folder `d:\Implementation4PJ\management_app_for_student`?
+
+## Verification Plan
+
+### Automated Tests
+- Future backend endpoints will have unit and integration tests (using JUnit and MockMvc/Ktor tests).
+- Android ViewModels will have unit tests.
+
+### Manual Verification
+1. Start the local backend server and PostgreSQL database.
+2. Build and run the Android app in the Android Studio Emulator.
+3. Manually test the registration flow for both a Teacher and a Student. 
+4. Verify JWT token is received and used in subsequent API requests.

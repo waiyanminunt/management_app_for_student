@@ -1,0 +1,26 @@
+# Supporter Unt App - Task Breakdown
+
+- [ ] Planning & Architecture Design
+  - [ ] Define backend API and database schema
+  - [ ] Define Android app architecture
+- [ ] Backend Implementation (Kotlin + Ktor/Spring Boot + PostgreSQL)
+  - [ ] Setup project
+  - [ ] Implement Database Schema & Connecting to PostgreSQL
+  - [ ] Implement Authentication (JWT)
+  - [ ] Implement User Roles (Student, Teacher)
+  - [ ] Implement Classes and Modules API
+  - [ ] Implement Course Registration API
+  - [ ] Implement Attendance API
+  - [ ] Implement Daily Routines API
+  - [ ] Implement Feedback/Voting API
+- [ ] Android Frontend Implementation (Kotlin + Jetpack Compose)
+  - [ ] Setup Android Project in Android Studio
+  - [ ] Implement Networking Layer (Retrofit/Ktor Client)
+  - [ ] Implement Auth Screens (Login/Registration)
+  - [ ] Implement Dashboard (Role-based)
+  - [ ] Implement Classes & Module screens
+  - [ ] Implement Attendance screens
+  - [ ] Implement Daily Routines screens
+  - [ ] Implement Feedback & Voting screens
+- [ ] Integration & Testing
+  - [ ] End-to-end testing
