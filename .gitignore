@@ -1,22 +1,63 @@
-# Build folders
-build/
-app/build/
-.gradle/
-out/
-
-# IDE files
-.idea/
-*.iml
-*.iws
-.vscode/
-
-# Local configuration
-local.properties
-gradle-daemon-jvm.properties
-
-# Log files
-*.log
-
-# OS generated files
+# General
 .DS_Store
 Thumbs.db
+
+# Build artifacts
+build/
+bin/
+gen/
+out/
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.pytest_cache/
+
+# Android
+capture/
+**/build/
+.gradle/
+local.properties
+gradle.xml
+**/*.apk
+**/*.aar
+**/*.jks
+**/*keystore
+
+# Node/JS (if any)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# System
+system_logs/
+# Database
+*.db
+*.sqlite
+# Credentials/Secrets
+secrets.json
+*.pem
+*.key

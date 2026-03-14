@@ -1,0 +1,149 @@
+# 🚀 Supporter Unit — Step-by-Step Run Guide
+
+## Prerequisites
+
+Before you start, make sure you have:
+- ✅ **Docker Desktop** installed and running
+- ✅ **Android Studio** (latest, with Android SDK 34)
+- ✅ **Python 3.11+** (for local FastAPI dev)
+- ✅ **Java 17+** (for the legacy Kotlin Spring Boot backend)
+- ✅ **Git** (project already cloned)
+
+---
+
+## Step 1 — Start the Database (Docker)
+
+This starts **PostgreSQL** (on port 5433) and the **FastAPI backend** (on port 8000).
+
+```powershell
+# From the project root
+cd D:\Implementation4PJ\management_app_for_student
+
+docker compose up -d
+```
+
+Verify it is running:
+```powershell
+docker ps
+```
+
+You should see two containers:
+| Container | Port |
+|---|---|
+| `supporter_unt_db` (PostgreSQL) | `5433` |
+| `supporter_unt_api` (FastAPI) | `8000` |
+
+> [!TIP]
+> First run may take 1-2 minutes to download the `postgres:15` and `python` images.
+
+---
+
+## Step 2 — Verify the FastAPI Backend
+
+Open your browser and visit:
+```
+http://localhost:8000/docs
+```
+
+You should see the **Swagger UI** with all API routes listed (auth, students, AI engine, etc.).
+
+If you need to restart the API only:
+```powershell
+docker compose restart fastapi
+```
+
+---
+
+## Step 3 — (Optional) Run FastAPI Locally for Development
+
+If you want to edit the Python backend without rebuilding Docker:
+
+```powershell
+cd D:\Implementation4PJ\management_app_for_student\backend-fastapi
+
+# Activate virtual environment (if created before)
+.\venv\Scripts\Activate.ps1
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the server
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+---
+
+## Step 4 — Run the Admin Android App
+
+1. Open **Android Studio**
+2. Click **File → Open** and choose:
+   ```
+   D:\Implementation4PJ\management_app_for_student\frontend-admin
+   ```
+3. Wait for Gradle sync to complete (~1-2 min on first open)
+4. Connect an **Android emulator** or real device (API 24+)
+5. Click the **Run ▶** button (or press `Shift+F10`)
+
+> [!IMPORTANT]
+> The app connects to the FastAPI on **port 8000**. For the Android Emulator, the backend URL is set to `http://10.0.2.2:8000` in [NetworkModule.kt](file:///d:/Implementation4PJ/management_app_for_student/frontend/app/src/main/java/com/example/supporterunt/app/network/NetworkModule.kt). Make sure Docker is running before launching the app.
+
+**Default test credentials** (after first register via the API):
+- Role: `admin`
+- Use `/api/auth/register` in Swagger to create a user
+
+---
+
+## Step 5 — Run the Student Android App
+
+1. Open a **second Android Studio window**: **File → Open**
+2. Choose:
+   ```
+   D:\Implementation4PJ\management_app_for_student\frontend-student
+   ```
+3. Wait for Gradle sync
+4. Run on emulator or device (API 24+)
+
+> [!NOTE]
+> The Student App has **offline support** via Room Database. Timetable data is cached locally and the QR code is generated without a network connection.
+
+---
+
+## Step 6 — Shutdown
+
+When done, stop all services:
+
+```powershell
+# From the project root
+docker compose down
+```
+
+---
+
+## Port Reference
+
+| Service | Port | Notes |
+|---|---|---|
+| PostgreSQL | `5433` | Local port (maps to container 5432) |
+| FastAPI | `8000` | REST API + Swagger UI |
+| Kotlin Spring Boot (legacy) | `8080` | Only if started manually |
+
+---
+
+## Build Status (verified ✅)
+
+| Module | Build Status |
+|---|---|
+| `frontend-admin` | ✅ BUILD SUCCESSFUL |
+| `frontend-student` | ✅ BUILD SUCCESSFUL (Room 2.7.0 + KSP 2.2.10) |
+| `backend-fastapi` | ✅ Docker container builds and runs |
+
+---
+
+## Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `Connection refused` on emulator | Use `10.0.2.2` instead of `localhost` in the app's `NetworkModule` |
+| Docker port conflict on 5433 | Check if local PostgreSQL is using port 5433: `netstat -an | find "5433"` |
+| Gradle sync fails | File → Invalidate Caches → Restart in Android Studio |
+| FastAPI container crashes | Run `docker compose logs fastapi` to see the error |

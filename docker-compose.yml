@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:15.17-trixie
@@ -13,6 +11,21 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
+
+  fastapi:
+    build: ./backend-fastapi
+    container_name: supporter_unt_api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/supporter_unt
+      - SECRET_KEY=supersecretkeypleasechangemeinproduction
+      - ENCRYPTION_KEY=supersecretencryptionkeymustbe32bytes
+    volumes:
+      - ./backend-fastapi:/app
+    depends_on:
+      - postgres
+    restart: always
 
 volumes:
   postgres_data:
